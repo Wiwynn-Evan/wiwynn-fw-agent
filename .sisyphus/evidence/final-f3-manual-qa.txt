@@ -1,0 +1,225 @@
+================================================================================
+F3 MANUAL QA REPORT
+Date: 2026-03-08
+Working Directory: D:\Antigravity_project\wiwynn_fw_agent\wiwynn-fw-agent
+================================================================================
+
+SCENARIO 1: Python scripts basic execution
+-------------------------------------------
+CMD: python .opencode/skills/jira-deep-analysis/scripts/fetch_jira.py 2>&1 | head -5
+OUTPUT:
+  用法: python fetch_jira.py <ISSUE-KEY>
+  範例: python fetch_jira.py GC20T5T7-121
+RESULT: PASS — shows usage, no ImportError/SyntaxError
+
+CMD: python .opencode/skills/jira-deep-analysis/scripts/search_github.py --help 2>&1 | head -5
+OUTPUT:
+  usage: search_github.py [-h] [--repos OWNER/REPO [OWNER/REPO ...]] [--org ORG]
+                          [--ext EXT] [--per-page N] [--text-matches]
+                          query
+  GitHub Code Search 輸出 JSON
+RESULT: PASS — shows argparse help, no ImportError/SyntaxError
+
+CMD: python .opencode/skills/jira-deep-analysis/scripts/grep_github_file.py --help 2>&1 | head -5
+OUTPUT:
+  usage: grep_github_file.py [-h] [--context N] [--max-matches N] [--ref REF]
+                             OWNER/REPO PATH PATTERN
+  在 GitHub 檔案中搜尋 pattern
+RESULT: PASS — shows argparse help, no ImportError/SyntaxError
+
+CMD: python .opencode/skills/jira-deep-analysis/scripts/fetch_github_file.py --help 2>&1 | head -5
+OUTPUT:
+  usage: fetch_github_file.py [-h] [--context N] [--ref REF]
+                              OWNER/REPO PATH LINE
+  獲取 GitHub 檔案中給定行號附近的程式碼片段 JSON
+RESULT: PASS — shows argparse help, no ImportError/SyntaxError
+
+Scripts [4/4 pass]
+
+================================================================================
+
+SCENARIO 2: Skill frontmatter validation
+-----------------------------------------
+CMD: for skill in jira-deep-analysis fw-code-researcher fw-code-writer fw-pr-reviewer fw-commit-generator commit-message-reviewer; do head -10 .opencode/skills/$skill/SKILL.md; done
+
+=== jira-deep-analysis ===
+---
+name: jira-deep-analysis
+description: 'Deep-dive analysis for BMC/firmware issues...'
+license: MIT
+version: 2.3.0-wiwynn
+---
+FIELDS: name ✓  description ✓  license ✓  version ✓
+RESULT: PASS
+
+=== fw-code-researcher ===
+---
+name: fw-code-researcher
+description: '接收 jira-deep-analysis 的分析報告...'
+license: MIT
+version: 1.0.0
+---
+FIELDS: name ✓  description ✓  license ✓  version ✓
+RESULT: PASS
+
+=== fw-code-writer ===
+---
+name: fw-code-writer
+description: '接收 fw-code-researcher 產出的修改方案...'
+license: MIT
+version: 1.0.0
+---
+FIELDS: name ✓  description ✓  license ✓  version ✓
+RESULT: PASS
+
+=== fw-pr-reviewer ===
+---
+name: fw-pr-reviewer
+description: '審查韌體 PR 的程式碼品質...'
+license: MIT
+version: 1.0.0
+---
+FIELDS: name ✓  description ✓  license ✓  version ✓
+RESULT: PASS
+
+=== fw-commit-generator ===
+---
+name: fw-commit-generator
+description: 'Generate git commit messages for OpenBMC/OpenBIC firmware...'
+license: MIT
+---
+NOTE: version field absent (not required — not in spec)
+FIELDS: name ✓  description ✓  license ✓  version — (absent)
+RESULT: PASS (version not required by spec)
+
+=== commit-message-reviewer ===
+---
+name: commit-message-reviewer
+description: 'Review git commit messages against EF1900 firmware department conventions...'
+license: MIT
+---
+NOTE: version field absent (not required — not in spec)
+FIELDS: name ✓  description ✓  license ✓  version — (absent)
+RESULT: PASS (version not required by spec)
+
+Skills [6/6 valid]
+
+================================================================================
+
+SCENARIO 3: /fw-dev command frontmatter
+-----------------------------------------
+CMD: head -10 .opencode/commands/fw-dev.md
+OUTPUT:
+  ---
+  description: End-to-end firmware development orchestration from issue analysis to review loop with repo safety guardrails
+  subtask: false
+  ---
+  # /fw-dev
+
+CHECKS:
+  description field present: ✓ ("End-to-end firmware development orchestration...")
+  subtask NOT true: ✓ (subtask: false)
+RESULT: PASS
+
+Command [PASS]
+
+================================================================================
+
+SCENARIO 4: fw-coder agent model binding
+------------------------------------------
+CMD: head -10 .opencode/agents/fw-coder.md
+OUTPUT:
+  ---
+  name: fw-coder
+  description: Firmware code writer for OpenBMC (C) and OpenBIC (Zephyr) projects. Generates unified diffs preserving existing style and patterns.
+  model: gpt-5.3-codex
+  ---
+
+CHECKS:
+  model field present: ✓
+  model points to codex model: ✓ (gpt-5.3-codex)
+RESULT: PASS
+
+================================================================================
+
+SCENARIO 5: jira-deep-analysis GitHub Issue URL adaptation
+-----------------------------------------------------------
+CMD: grep -n "github.com.*issues\|Route G\|gh issue\|GitHub Issue" .opencode/skills/jira-deep-analysis/SKILL.md | head -10
+OUTPUT:
+  72: ### → Route G: GitHub Issue Mode（Wiwynn 擴充）
+  74: 若輸入符合 GitHub Issue URL 格式 https://github.com/{owner}/{repo}/issues/{number}，則啟動 GitHub Issue mode：
+  77: # 取得 GitHub Issue 完整資料（JSON 格式）
+  78: gh issue view {URL} --json title,body,labels,assignees,comments
+  83: if input matches: https://github.com/{owner}/{repo}/issues/{number}
+  84:   → Route G: GitHub Issue mode
+  85:   → 使用 gh issue view {URL} --json title,body,labels,assignees,comments 取得 issue 資料
+  87:   → 繼續走 Route A 分析流程（以 GitHub Issue 資料取代 JIRA Issue 資料）
+  92: 適用情境：Wiwynn gc2-bmc-collection-script GitHub private repo issue
+  94: 注意：Route G 取得 issue 資料後，平台路由...
+
+MATCH COUNT: 10 matches (>= 3 required)
+RESULT: PASS
+
+================================================================================
+
+SCENARIO 6: Config validation
+-------------------------------
+CMD: python -c "import json; data=json.load(open('.opencode/config.json')); print('VALID:', data)"
+OUTPUT:
+  VALID: {'permissions': {'bash': {'rm -rf *': 'deny'}}}
+RESULT: PASS — exact match with expected output
+
+================================================================================
+
+SCENARIO 7: .env.example completeness
+---------------------------------------
+CMD: cat .env.example
+OUTPUT:
+  # GitHub API Token (for Python scripts + private repo access)
+  GITHUB_TOKEN=your_github_token_here
+
+  # JIRA API credentials (for jira-deep-analysis skill)
+  JIRA_URL=https://your-company.atlassian.net
+  JIRA_USERNAME=your.email@company.com
+  JIRA_API_TOKEN=YOUR_JIRA_API_TOKEN_HERE
+
+CHECKS:
+  GITHUB_TOKEN present: ✓
+  JIRA_URL present: ✓
+  JIRA_USERNAME present: ✓
+  JIRA_API_TOKEN present: ✓
+RESULT: PASS
+
+================================================================================
+
+SCENARIO 8: Git tracking - no .env
+------------------------------------
+CMD: git ls-files | grep -E "\.env$"
+OUTPUT: (empty — no output)
+ALSO CHECKED: git ls-files | grep "\.env"
+OUTPUT:
+  .env.example
+  .opencode/skills/jira-deep-analysis/scripts/.env.example
+
+CHECKS:
+  No bare .env tracked: ✓ (empty output for exact \.env$ pattern)
+  Only .env.example files tracked: ✓
+RESULT: PASS
+
+================================================================================
+
+SUMMARY
+-------
+Scripts         [4/4 pass]
+Skills          [6/6 valid]
+Command         [PASS]
+Agent           [PASS]
+GitHub Issue    [PASS] (10 matches found)
+Config          [PASS]
+.env.example    [PASS]
+Git .env safety [PASS]
+
+VERDICT: APPROVE
+
+All 8 scenarios passed. No ImportError/SyntaxError in Python scripts. All SKILL.md files have valid YAML frontmatter with required fields. /fw-dev command has description and subtask:false. fw-coder agent has model binding to gpt-5.3-codex. GitHub Issue Route G is well-documented with 10+ matches. config.json is valid JSON with correct permissions. .env.example contains all 4 required env vars. No .env file is git-tracked.
+================================================================================

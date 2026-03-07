@@ -1,0 +1,22 @@
+=== Task 12 Commit History ===
+
+ad12038 test(e2e): add end-to-end test with gc2-bmc-collection-script
+fdbfb83 feat(orchestration): add fw-coder agent, /fw-dev command, GitHub Issue support
+ac1c9c8 feat(skills): add fw-code-researcher, fw-code-writer, fw-pr-reviewer skills
+e3b85a4 feat(opencode): scaffold .opencode directory and migrate existing skills
+ab37acf Add .gitignore with .env
+
+=== Current Status ===
+ D .sisyphus/evidence/task-1-directory-structure.txt
+ D .sisyphus/evidence/task-1-readme-check.txt
+?? .opencode/AGENTS.md
+?? .opencode/bun.lock
+?? .opencode/package.json
+?? .opencode/skills/AGENTS.md
+?? .opencode/skills/jira-deep-analysis/AGENTS.md
+?? .opencode/skills/jira-deep-analysis/scripts/AGENTS.md
+?? .sisyphus/boulder.json
+?? .sisyphus/evidence/task-12-commit-history.txt
+?? .sisyphus/notepads/
+?? .sisyphus/plans/
+?? AGENTS.md

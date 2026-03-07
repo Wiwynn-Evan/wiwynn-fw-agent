@@ -1,0 +1,64 @@
+=======================================================================
+PLAN COMPLIANCE AUDIT — wiwynn-fw-agent
+Generated: 2026-03-08
+=======================================================================
+
+== MUST HAVE CHECKS (File Existence + Line Count) ==
+
+ 1. .opencode/config.json                              PASS  (7 lines, deny rm -rf*)
+ 2. .opencode/skills/jira-deep-analysis/SKILL.md       PASS  (710 lines ≥ 700, v2.3.0-wiwynn, Route G present)
+ 3. .../scripts/fetch_jira.py                          PASS  (158 lines exact)
+ 4. .../scripts/search_github.py                       PASS  (286 lines exact)
+ 5. .../scripts/grep_github_file.py                    PASS  (158 lines exact)
+ 6. .../scripts/fetch_github_file.py                   PASS  (176 lines exact)
+ 7. .../scripts/.env.example                           PASS  (19 lines exact)
+ 8. .opencode/skills/fw-code-researcher/SKILL.md       PASS  (495 lines exact)
+ 9. .opencode/skills/fw-code-writer/SKILL.md           PASS  (405 lines exact)
+10. .opencode/skills/fw-pr-reviewer/SKILL.md           PASS  (533 lines exact, APPROVE/REQUEST_CHANGES confirmed)
+11. .opencode/skills/fw-commit-generator/SKILL.md      PASS  (257 lines exact)
+12. .opencode/skills/commit-message-reviewer/SKILL.md  PASS  (432 lines exact)
+13. .opencode/commands/fw-dev.md                       PASS  (63 lines, $ARGUMENTS on lines 8 & 20)
+14. .opencode/agents/fw-coder.md                       PASS  (50 lines < 100, model: gpt-5.3-codex)
+15. .env.example                                       PASS  (7 lines, 4 env vars: GITHUB_TOKEN, JIRA_URL, JIRA_USERNAME, JIRA_API_TOKEN)
+16. .sisyphus/evidence/task-11-issue-created.txt       PASS  (6 lines, real GitHub issue URL confirmed)
+
+Must Have Total: 16/16 PASS
+
+== MUST NOT HAVE CHECKS ==
+
+ 1. NO ^model: in any SKILL.md frontmatter             PASS  (grep returned empty — all 6 skills clean)
+ 2. NO subtask: true in fw-dev.md                      PASS  (subtask: false — compliant)
+ 3. NO .env files tracked in git                       PASS  (git ls-files | grep \.env$ — empty)
+ 4. EF1900 source SKILL.md UNCHANGED at 683 lines      PASS  (D:\Antigravity_project\EF1900_Dep_Automation\.opencode\skills\jira-deep-analysis\SKILL.md = 683 lines)
+
+Note: "no multiple Skills loaded at once" anti-pattern — fw-dev.md has no load_skills array; skills
+invoked sequentially via description, not loaded simultaneously. PASS.
+
+Must NOT Have Total: 5/5 PASS (4 explicit + 1 derived)
+
+== CONTENT SPOT-CHECKS ==
+
+- jira-deep-analysis/SKILL.md: v2.3.0-wiwynn confirmed (line 705), Route G GitHub Issue mode confirmed (lines 72-92)
+- fw-pr-reviewer/SKILL.md: APPROVE/REQUEST_CHANGES verdict logic confirmed (lines 12, 16, 18, 345-368)
+- fw-coder agent: model: gpt-5.3-codex confirmed (line 4), < 100 lines (50)
+- Python scripts: load_dotenv from own directory confirmed (fetch_jira.py lines 40-43)
+- .env.example root: 4 required vars (GITHUB_TOKEN, JIRA_URL, JIRA_USERNAME, JIRA_API_TOKEN) present
+- task-11 evidence: live GitHub issue https://github.com/Wiwynn/gc2-bmc-collection-script/issues/1, exit=0
+
+== TASKS COMPLETION ==
+
+All 12 plan tasks inferred complete based on:
+- All 16 deliverable files exist with exact expected line counts
+- All content requirements verified
+- Evidence file present and valid
+
+Tasks: 12/12 PASS (inferred from deliverable completeness)
+
+=======================================================================
+SUMMARY:
+  Must Have     : 16/16
+  Must NOT Have :  5/5
+  Tasks         : 12/12
+
+VERDICT: APPROVE
+=======================================================================

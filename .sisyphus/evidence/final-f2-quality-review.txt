@@ -1,0 +1,313 @@
+F2 CODE QUALITY REVIEW REPORT
+Generated: 2026-03-08
+Reviewer: Sisyphus-Junior (F2 task)
+========================================
+
+═══════════════════════════════════════
+SECTION 1: SKILL.md FILES
+═══════════════════════════════════════
+
+────────────────────────────────────────
+1. jira-deep-analysis/SKILL.md (710 lines, v2.3.0-wiwynn)
+────────────────────────────────────────
+Frontmatter:
+  [✓] name: jira-deep-analysis
+  [✓] description: present (long, substantive)
+  [✓] license: MIT
+  [✓] version: 2.3.0-wiwynn
+  [✓] NO model: field
+
+TODO markers:        NONE
+Placeholder text:    NONE
+AI slop:             NONE — content is dense operational routing logic, not meta-commentary
+Substantive content: YES — 710 lines covering Phase 0/A/A-FR/B routing, 3 Route B handlers,
+                     FEATURE_REQUEST rules (FR-1/FR-2/FR-3), report templates, JIRA key mapping table
+                     GitHub Issue (Route G) mode, parallel agent search (Phase A-1), evidence matrix
+Status: CLEAN ✓
+
+────────────────────────────────────────
+2. fw-code-researcher/SKILL.md (495 lines, v1.0.0)
+────────────────────────────────────────
+Frontmatter:
+  [✓] name: fw-code-researcher
+  [✓] description: present (substantive Chinese description)
+  [✓] license: MIT
+  [✓] version: 1.0.0
+  [✓] NO model: field
+
+TODO markers:        NONE
+Placeholder text:    NONE — template brackets like [為什麼需要修改此檔案] are intentional
+                     output template instructions, not unfilled placeholders
+AI slop:             NONE — structured operational workflow, no meta-commentary
+Substantive content: YES — 495 lines covering BUG/FEATURE_REQUEST input formats, 3-step
+                     search workflow (search_github → grep → fetch), output plan template,
+                     best practices, version history
+Status: CLEAN ✓
+
+────────────────────────────────────────
+3. fw-code-writer/SKILL.md (405 lines, v1.0.0)
+────────────────────────────────────────
+Frontmatter:
+  [✓] name: fw-code-writer
+  [✓] description: present (substantive)
+  [✓] license: MIT
+  [✓] version: 1.0.0
+  [✓] NO model: field
+
+TODO markers:        NONE (false positive: "XXX" at line 173 is inside a C code example
+                     showing placeholder macro name "SENSOR_NUM_XXX" — intentional template code)
+Placeholder text:    NONE
+AI slop:             NONE
+Substantive content: YES — 405 lines covering coding style rules (oBMC 4-space / OpenBIC tab),
+                     syslog/LOG_ERR patterns, snprintf usage, 3 C code templates (A/B/C),
+                     unified diff output format spec, quality checklists
+Status: CLEAN ✓ (SENSOR_NUM_XXX false positive confirmed intentional)
+
+────────────────────────────────────────
+4. fw-pr-reviewer/SKILL.md (533 lines, v1.0.0)
+────────────────────────────────────────
+Frontmatter:
+  [✓] name: fw-pr-reviewer
+  [✓] description: present (substantive)
+  [✓] license: MIT
+  [✓] version: 1.0.0
+  [✓] NO model: field
+
+TODO markers:        NONE
+Placeholder text:    NONE
+AI slop:             NONE
+Substantive content: YES — 533 lines covering 7 review dimensions, platform-specific rules
+                     (oBMC/OpenBIC), APPROVE/REQUEST_CHANGES output format, structured issue
+                     reporting format, Review Loop integration diagram, integration instructions
+                     for fw-code-writer
+Status: CLEAN ✓
+
+────────────────────────────────────────
+5. fw-commit-generator/SKILL.md (257 lines, no version field)
+────────────────────────────────────────
+Frontmatter:
+  [✓] name: fw-commit-generator
+  [✓] description: present (substantive)
+  [✓] license: MIT
+  [!] version: MISSING — no version: field in frontmatter
+  [✓] NO model: field
+
+TODO markers:        NONE
+Placeholder text:    NONE
+AI slop:             NONE
+Substantive content: YES — covers Meta oBMC (GitHub) and LF oBMC (Gerrit) formats,
+                     body section requirements, domain knowledge terminology, constraints,
+                     worked examples (Feature + Bug Fix)
+
+ISSUE: fw-commit-generator/SKILL.md — frontmatter missing "version:" field
+Status: 1 ISSUE (minor — missing version field)
+
+────────────────────────────────────────
+6. commit-message-reviewer/SKILL.md (432 lines, no version field)
+────────────────────────────────────────
+Frontmatter:
+  [✓] name: commit-message-reviewer
+  [✓] description: present (substantive)
+  [✓] license: MIT
+  [!] version: MISSING — no version: field in frontmatter
+  [✓] NO model: field
+
+TODO markers:        NONE (false positive: line 258 "YV4T1M-XXXX" is inside a code block
+                     showing a JIRA number template in reviewer output example — intentional)
+Placeholder text:    NONE
+AI slop:             NONE
+Substantive content: YES — 432 lines, LF oBMC (Gerrit) Conventional Commits rules,
+                     Meta oBMC (GitHub) rules, review steps 1-4, worked examples,
+                     APPROVE/REQUEST_CHANGES output format
+
+ISSUE: commit-message-reviewer/SKILL.md — frontmatter missing "version:" field
+Status: 1 ISSUE (minor — missing version field)
+
+
+═══════════════════════════════════════
+SECTION 2: PYTHON SCRIPTS
+═══════════════════════════════════════
+
+────────────────────────────────────────
+1. fetch_jira.py (158 lines)
+────────────────────────────────────────
+Error handling:
+  [✓] try/except around requests.get() — catches Timeout, ConnectionError
+  [✓] HTTP 401, 404, and generic error handled with _error() → sys.exit(1)
+  [✓] _error() uses sys.exit(1) (non-zero exit code)
+  [✓] Missing env var validation with descriptive error
+
+.env loading pattern:
+  [✓] Uses os.path.dirname(os.path.abspath(__file__)) pattern (lines 41-43)
+  [✓] Falls back gracefully if python-dotenv not installed (ImportError caught)
+  [✓] Checks if .env file exists before loading
+
+JSON output:
+  [✓] json.dumps(result, ensure_ascii=False, indent=2) to stdout
+  [✓] Structured output: key, summary, description, labels, components, issue_type
+
+Imports:
+  [✓] os, sys, json, typing.NoReturn, requests — all standard/valid
+  [✓] dotenv wrapped in try/except — ImportError handled
+
+ADF parsing:
+  [✓] Recursive _adf_to_text() handles Atlassian Document Format
+  [✓] Description truncated at 8000 chars
+
+Status: CLEAN ✓
+
+────────────────────────────────────────
+2. search_github.py (286 lines)
+────────────────────────────────────────
+Error handling:
+  [✓] Exponential backoff: 2s→4s→8s→16s→32s for rate limit (429/403)
+  [✓] HTTP 401 → _error() exit(1)
+  [✓] Timeout, ConnectionError caught — returns error dict (not crash)
+  [✓] Multi-repo errors per-repo: warns stderr, continues other repos
+  [✓] Max retries exceeded: returns structured error dict
+
+.env loading pattern:
+  [✓] Uses os.path.dirname(os.path.abspath(__file__)) (lines 80-85)
+  [✓] Falls back gracefully on ImportError
+
+JSON output:
+  [✓] json.dumps to stdout
+  [✓] Structured: total_count, items, rate_limit_remaining, latency_ms, errors
+
+Imports:
+  [✓] os, sys, json, time, argparse, typing, requests — all valid
+  [✓] dotenv wrapped in try/except
+
+Status: CLEAN ✓
+
+────────────────────────────────────────
+3. grep_github_file.py (158 lines)
+────────────────────────────────────────
+Error handling:
+  [✓] HTTP 404, 401, generic error handled
+  [✓] Timeout, ConnectionError caught → _error() exit(1)
+  [✓] UnicodeDecodeError on base64 decode caught
+  [✓] re.error caught for invalid regex pattern
+  [✓] download_url fallback for large files
+
+.env loading pattern:
+  [✓] Uses os.path.dirname(os.path.abspath(__file__)) (lines 15-16)
+  [✓] Falls back gracefully on ImportError
+
+JSON output:
+  [✓] json.dumps with ensure_ascii=False, indent=2
+  [✓] Structured: repo, path, pattern, total_lines, match_count, truncated, matches[]
+
+Imports:
+  [✓] os, sys, re, json, base64, argparse, typing, requests — all valid
+
+Pattern handling:
+  [✓] Python re.compile() used (not shell glob)
+  [✓] truncated flag set when max_matches reached
+
+Status: CLEAN ✓
+
+────────────────────────────────────────
+4. fetch_github_file.py (176 lines)
+────────────────────────────────────────
+Error handling:
+  [✓] HTTP 404, 401, generic error handled
+  [✓] Timeout, ConnectionError caught → _error() exit(1)
+  [✓] UnicodeDecodeError caught on base64 decode
+  [✓] download_url fallback for large files
+  [✓] LINE < 1 validation at CLI entry point
+
+.env loading pattern:
+  [✓] Uses os.path.dirname(os.path.abspath(__file__)) (lines 43-48)
+  [✓] Falls back gracefully on ImportError
+
+JSON output:
+  [✓] json.dumps to stdout
+  [✓] Structured: repo, path, start_line, end_line, total_lines, content
+
+Imports:
+  [✓] os, sys, json, base64, argparse, typing, requests — all valid
+
+Status: CLEAN ✓
+
+
+═══════════════════════════════════════
+SECTION 3: CONFIG FILES
+═══════════════════════════════════════
+
+────────────────────────────────────────
+.gitignore (root, 2 lines)
+────────────────────────────────────────
+  [✓] Contains ".env" entry (line 1)
+  [✓] Contains ".opencode/node_modules/" entry (line 2)
+Status: PASS ✓
+
+────────────────────────────────────────
+.env.example (7 lines)
+────────────────────────────────────────
+  [✓] GITHUB_TOKEN present
+  [✓] JIRA_URL present
+  [✓] JIRA_USERNAME present
+  [✓] JIRA_API_TOKEN present
+  [✓] All 4 required variables present with example placeholder values
+Status: PASS ✓
+
+────────────────────────────────────────
+.opencode/config.json (7 lines)
+────────────────────────────────────────
+  [✓] Valid JSON (python -c "import json; json.load(open(...))" → JSON VALID)
+  [✓] Has permissions.bash deny rule: "rm -rf *": "deny"
+Status: PASS ✓
+
+────────────────────────────────────────
+scripts/.gitignore (1 line)
+────────────────────────────────────────
+  [✓] Contains ".env" entry
+Status: PASS ✓
+
+
+═══════════════════════════════════════
+SECTION 4: ISSUE SUMMARY
+═══════════════════════════════════════
+
+SKILLS:
+  CLEAN (4/6):
+    - jira-deep-analysis/SKILL.md
+    - fw-code-researcher/SKILL.md
+    - fw-code-writer/SKILL.md
+    - fw-pr-reviewer/SKILL.md
+  ISSUES (2/6):
+    - fw-commit-generator/SKILL.md: missing "version:" in frontmatter
+    - commit-message-reviewer/SKILL.md: missing "version:" in frontmatter
+  NOTE: These 2 are COPIED skills from EF1900_Dep_Automation (per task context),
+        and the source apparently did not include version fields. Not a functional
+        defect — purely cosmetic frontmatter gap.
+
+FALSE POSITIVES RESOLVED:
+  - fw-code-writer/SKILL.md:173 "SENSOR_NUM_XXX" — C code example macro placeholder, intentional
+  - commit-message-reviewer/SKILL.md:258 "YV4T1M-XXXX" — reviewer output example JIRA template, intentional
+
+PYTHON SCRIPTS: All 4 CLEAN — no issues found
+CONFIG FILES: All 4 PASS — no issues found
+
+
+═══════════════════════════════════════
+FINAL VERDICT
+═══════════════════════════════════════
+
+Skills    [4 clean / 2 issues (minor: missing version: field in copied skills)]
+Scripts   [4 clean / 0 issues]
+Config    [PASS]
+
+VERDICT: APPROVE
+
+Rationale:
+  The 2 issues are purely cosmetic (missing version: field in frontmatter of 2 copied
+  skills). Both skills are functionally complete, substantive, and have correct
+  name/description/license fields. No placeholder text, no TODO markers, no AI slop
+  found anywhere. All Python scripts have proper error handling, correct .env loading
+  pattern, and consistent JSON output. All config files pass validation.
+
+  The missing version: fields should be noted for cleanup but do not block APPROVE
+  — they are inherited from the source repo (EF1900_Dep_Automation) and the skills
+  themselves are production-quality content.
