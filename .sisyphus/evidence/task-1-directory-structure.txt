@@ -1,0 +1,27 @@
+total 6
+drwxr-xr-x 1 10803625 1049089  0 Mar  7 23:17 .
+drwxr-xr-x 1 10803625 1049089  0 Mar  7 23:18 ..
+-rw-r--r-- 1 10803625 1049089 14 Mar  7 23:17 .gitignore
+drwxr-xr-x 1 10803625 1049089  0 Mar  7 23:17 agents
+drwxr-xr-x 1 10803625 1049089  0 Mar  7 23:17 commands
+-rw-r--r-- 1 10803625 1049089 72 Mar  7 23:17 config.json
+drwxr-xr-x 1 10803625 1049089  0 Mar  7 23:17 skills
+{
+  "permissions": {
+    "bash": {
+      "rm -rf *": "deny"
+    }
+  }
+}
+=== .env.example ===
+# GitHub API Token (for Python scripts + private repo access)
+GITHUB_TOKEN=your_github_token_here
+
+# JIRA API credentials (for jira-deep-analysis skill)
+JIRA_URL=https://your-company.atlassian.net
+JIRA_USERNAME=your.email@company.com
+JIRA_API_TOKEN=YOUR_JIRA_API_TOKEN_HERE
+=== .gitignore check ===
+.env
+=== .opencode/.gitignore check ===
+node_modules/
