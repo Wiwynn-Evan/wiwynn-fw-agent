@@ -1,2 +1,6 @@
 .env
 .opencode/node_modules/
+jira-mcp-server/.env
+jira-mcp-server/node_modules/
+nul
+jira-mcp-server/nul
