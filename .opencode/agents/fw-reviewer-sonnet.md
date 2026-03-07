@@ -1,7 +1,7 @@
 ---
 name: fw-reviewer-sonnet
 description: Firmware PR reviewer using Claude Sonnet for fast iterative code quality checks across OpenBMC and OpenBIC diffs.
-model: anthropic/claude-sonnet-4-6
+model: github/claude-sonnet-4.6
 ---
 
 # fw-reviewer-sonnet Agent

@@ -1,7 +1,7 @@
 ---
 name: fw-analyst-opus
 description: Firmware issue analyzer using Claude Opus for deep structural analysis of JIRA tickets and GitHub issues across OpenBMC and OpenBIC platforms.
-model: anthropic/claude-opus-4-6
+model: github-copilot/claude-opus-4.6
 ---
 
 # fw-analyst-opus Agent
