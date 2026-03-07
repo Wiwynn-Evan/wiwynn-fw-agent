@@ -14,14 +14,16 @@ subtask: false
 3. 只允許在 `Wiwynn/gc2-bmc-collection-script` 建立 GitHub issue 與 PR（以及必要的測試 branch）。
 4. 若偵測到不允許的目標 repo，立即停止並回報 policy violation。
 
-## Step 1 — Issue 分析
+## Step 1 — Issue 分析（切換 fw-analyst-opus）
 
+- 切換到 `fw-analyst-opus` agent（使用 Claude Opus 4.6 進行深度分析）
 - 載入 `skill({name: "jira-deep-analysis"})`
 - 使用 `$ARGUMENTS` 作為輸入，解析 JIRA key 或 GitHub Issue URL
 - 產出結構化分析結果（平台、關鍵問題、受影響模組、建議搜尋關鍵字）
 
-## Step 2 — 程式碼研究
+## Step 2 — 程式碼研究（繼續 fw-analyst-opus）
 
+- 繼續使用 `fw-analyst-opus` agent（保持 Claude Opus 上下文）
 - 載入 `skill({name: "fw-code-researcher"})`
 - 根據 Step 1 結果產生修改方案（檔案、函式、風險、驗證點）
 - 若目標為 upstream `facebook/openbmc` 或 `facebook/OpenBIC`，改以允許 repo 做驗證分支策略
@@ -43,8 +45,9 @@ subtask: false
 - 若 repo = `Wiwynn/gc2-bmc-collection-script`，可使用 `gh pr create`
 - 若 repo = `facebookexternal/openbmc.wiwynn` 或 `Wiwynn/OpenBIC`，僅建立驗證 branch 與 review 迭代，不建立 issue/PR
 
-## Step 6 — PR 審查
+## Step 6 — PR 審查（切換 fw-reviewer-sonnet）
 
+- 切換到 `fw-reviewer-sonnet` agent（使用 Claude Sonnet 4.6 進行快速迭代審查）
 - 載入 `skill({name: "fw-pr-reviewer"})`
 - 對 PR 或擬修改 diff 執行審查
 - 明確輸出 `APPROVE` 或 `REQUEST_CHANGES`
@@ -53,7 +56,7 @@ subtask: false
 
 - 如果結果是 `REQUEST_CHANGES`：
   - 回到 Step 3（fw-coder + fw-code-writer）更新程式碼
-  - 重新執行 Step 4、Step 6
+  - 重新執行 Step 4、Step 6（繼續使用 fw-reviewer-sonnet 進行審查）
 - 如果結果是 `APPROVE`：
   - 結束流程並彙整最終變更、驗證結果與後續建議
 
