@@ -2,7 +2,7 @@
 name: jira-deep-analysis
 description: 'Deep-dive analysis for BMC/firmware issues using evidence-based investigation. Handles TWO platforms: (1) OpenBMC Linux ecosystem (phosphor-*, bmcweb, entity-manager, oBMC kernel) via JIRA-driven parallel agent search — produces full root cause analysis reports; (2) OpenBIC/Zephyr gc2-es Bridge IC firmware (AST1030/Arm Cortex-M) via GDB/west runtime debugging — handles sensor/VR/thermal/SMI/crash issues with common/ shared-code awareness. Auto-routes based on issue context. Use for: complex JIRA bugs, cross-repo investigation, gc2-es plat_class/plat_ipmi debugging, OpenBIC common/ dependency issues, firmware regression analysis, platform porting problems.'
 license: MIT
-version: 2.2.0
+version: 2.3.0-wiwynn
 ---
 
 # BMC/韌體深度分析 Skill (雙平台路由)
@@ -68,6 +68,32 @@ facebook/openbmc/
 - 關鍵字: `AST2600`（無 OpenBIC 脈絡）, Linux BMC, JIRA investigation
 - 症狀: BMC reset 失效, sensor daemon 掛掉, FRU 讀取問題, platform identification wrong
 - 症狀: `front-paneld` 錯誤、`enclosure-util` 異常、`fru-util` 問題、PAL API 相關
+
+### → Route G: GitHub Issue Mode（Wiwynn 擴充）
+
+若輸入符合 **GitHub Issue URL 格式** `https://github.com/{owner}/{repo}/issues/{number}`，則啟動 GitHub Issue mode：
+
+```bash
+# 取得 GitHub Issue 完整資料（JSON 格式）
+gh issue view {URL} --json title,body,labels,assignees,comments
+```
+
+**偵測邏輯**：
+```
+if input matches: https://github.com/{owner}/{repo}/issues/{number}
+  → Route G: GitHub Issue mode
+  → 使用 gh issue view {URL} --json title,body,labels,assignees,comments 取得 issue 資料
+  → 提取: title, body, labels, assignees, comments
+  → 繼續走 Route A 分析流程（以 GitHub Issue 資料取代 JIRA Issue 資料）
+else if input matches JIRA key (ABC-123) or JIRA URL:
+  → Route A / Route B（依 JIRA Key 前綴判斷，同上方邏輯）
+```
+
+**適用情境**：Wiwynn `gc2-bmc-collection-script` 等 GitHub private repo 的 issue 調查（`/fw-dev` slash command 接受 JIRA key 或 GitHub Issue URL）。
+
+**注意**：Route G 取得 issue 資料後，平台路由（Route A vs Route B）仍依 issue 內容中的關鍵字判斷（如 labels、body 提及 OpenBIC/Zephyr 或 OpenBMC/Linux）。
+
+---
 
 ### → 無法判斷時
 詢問用戶：**「這個 issue 是在 OpenBIC (Zephyr, BIC firmware) 還是 OpenBMC (Linux, host BMC) 環境？」**
@@ -676,6 +702,7 @@ task(subagent_type="artistry", prompt="Non-conventional approach needed: ...")
 
 ## 版本歷史
 
+- **v2.3.0-wiwynn** (2026-03-07): [Wiwynn fork] 新增 Route G GitHub Issue URL 支援（`gh issue view {URL} --json title,body,labels,assignees,comments`）；Phase 0 加入 GitHub Issue 偵測邏輯，以支援 `/fw-dev` slash command 接受 GitHub Issue URL 作為入口
 - **v2.3.0** (2026-03-05): 新增 Phase A-FR (FEATURE_REQUEST 工作流程) 含同平台 Pattern 優先、檔案組織一致性、交叉驗證三條規則 + 專用報告範本；新增 `grep_github_file.py` regex 語法備註
 - **v2.2.0** (2026-03-05): 新增「同類 sensor 掃描」規則、「修復層級」方案標示、Route B 品質檢查清單；`fetch_github_file.py` 新增 `--ref` 支援；源自 GC20T5T7-134 delta 分析 (DISC-006)
 - **v2.1.0** (2026-03-05): 新增 `grep_github_file.py` 工具、`search_github.py` 加入 `--text-matches` 支援、強化 Phase 0 平台偵測（JIRA Key 對照表 + sublayer 架構說明）
