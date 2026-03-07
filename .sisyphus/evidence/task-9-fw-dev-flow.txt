@@ -1,0 +1,11 @@
+=== task-9 flow checks ===
+ARGUMENTS=2
+jira-deep-analysis=1
+fw-code-researcher=1
+fw-code-writer=2
+fw-pr-reviewer=1
+fw-commit-generator=1
+fw-coder=3
+APPROVE=2
+REQUEST_CHANGES=2
+exit=0

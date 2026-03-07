@@ -1,0 +1,20 @@
+total 32
+drwxr-xr-x 1 10803625 1049089     0 Mar  7 23:19 .
+drwxr-xr-x 1 10803625 1049089     0 Mar  7 23:20 ..
+drwxr-xr-x 1 10803625 1049089     0 Mar  7 23:19 scripts
+-rw-r--r-- 1 10803625 1049089 27655 Mar  7 23:19 SKILL.md
+total 45
+drwxr-xr-x 1 10803625 1049089     0 Mar  7 23:19 .
+drwxr-xr-x 1 10803625 1049089     0 Mar  7 23:19 ..
+-rw-r--r-- 1 10803625 1049089   878 Mar  7 23:19 .env.example
+-rw-r--r-- 1 10803625 1049089     5 Mar  7 23:19 .gitignore
+-rwxr-xr-x 1 10803625 1049089  6029 Mar  7 23:19 fetch_github_file.py
+-rwxr-xr-x 1 10803625 1049089  4854 Mar  7 23:19 fetch_jira.py
+-rwxr-xr-x 1 10803625 1049089  5695 Mar  7 23:19 grep_github_file.py
+-rwxr-xr-x 1 10803625 1049089 11003 Mar  7 23:19 search_github.py
+=== SKILL.md line count ===
+683 /d/Antigravity_project/wiwynn_fw_agent/wiwynn-fw-agent/.opencode/skills/jira-deep-analysis/SKILL.md
+=== .env present check ===
+.env NOT present (GOOD)
+=== SKILL name field ===
+name: jira-deep-analysis

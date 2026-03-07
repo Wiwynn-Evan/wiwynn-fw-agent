@@ -1,0 +1,37 @@
+=== QA Verification: fw-code-researcher SKILL.md ===
+
+--- Test 1: frontmatter name ---
+name: fw-code-researcher
+PASS (exit 0)
+
+--- Test 2: model: field NOT present ---
+PASS: model: field NOT present (exit 1 as expected)
+
+--- Test 3: search_github.py count ---
+search_github.py count: 11
+PASS
+
+--- Test 4: grep_github_file.py count ---
+grep_github_file.py count: 8
+PASS
+
+--- Test 5: fetch_github_file.py count ---
+fetch_github_file.py count: 8
+PASS
+
+--- Test 6: meta-facebook mention ---
+meta-facebook count: 9
+PASS
+
+--- Test 7: common/ mention ---
+common/ count: 18
+PASS
+
+--- Additional checks ---
+File size: 19051 bytes
+Line count: 495 lines
+Has frontmatter license: 1
+Has frontmatter version: 1
+Has description: 1
+
+=== All QA checks completed ===

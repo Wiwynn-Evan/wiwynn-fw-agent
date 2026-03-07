@@ -1,0 +1,68 @@
+TASK 8: fw-coder Agent Creation
+================================
+Date: 2026-03-07
+Status: COMPLETE
+
+VERIFICATION CHECKS
+===================
+
+[1] name field verification:
+name: fw-coder
+✓ PASS
+
+[2] description field verification:
+description: Firmware code writer for OpenBMC (C) and OpenBIC (Zephyr) projects. Generates unified diffs preserving existing style and patterns.
+✓ PASS
+
+[3] model field verification:
+model: gpt-5.3-codex
+✓ PASS
+
+[4] gpt/codex model reference verification:
+model: gpt-5.3-codex
+✓ PASS
+
+[5] Line count check:
+Total: 50 lines
+Required: < 100 lines
+✓ PASS
+
+FILE LOCATION
+=============
+D:\Antigravity_project\wiwynn_fw_agent\wiwynn-fw-agent\.opencode\agents\fw-coder.md
+
+FIRST 20 LINES
+==============
+---
+name: fw-coder
+description: Firmware code writer for OpenBMC (C) and OpenBIC (Zephyr) projects. Generates unified diffs preserving existing style and patterns.
+model: gpt-5.3-codex
+---
+
+# fw-coder Agent
+
+Specialized code writer for Wiwynn firmware development.
+
+## Role
+
+You are a firmware code writer targeting **OpenBMC** (C language, pal_ naming, 4-space indent, syslog) and **OpenBIC** (Zephyr RTOS, plat_ naming, LOG_ERR/LOG_WRN/LOG_INF macros).
+
+When invoked, you receive:
+- A modification plan from fw-code-researcher
+- File paths and target functions
+- Required behavior changes
+
+Your job: **Write C/C++ code that implements the plan as a unified diff.**
+
+REQUIREMENTS MET
+================
+✓ YAML frontmatter with name, description, model fields
+✓ Model references gpt-5.3-codex (codex-family)
+✓ Body defines firmware code writer role
+✓ Mentions OpenBMC (C, pal_ naming, 4-space indent, syslog)
+✓ Mentions OpenBIC (Zephyr, plat_ naming, LOG_ERR/WRN/INF)
+✓ Emphasizes unified diffs, style preservation, no regressions
+✓ Instructs agent to load fw-code-writer skill via skill({name: "fw-code-writer"})
+✓ Total file under 100 lines (50 lines)
+✓ No Skills embedded—loaded on-demand
+✓ No subtask field used

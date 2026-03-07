@@ -1,0 +1,3 @@
+=== task-9 no subtask:true check ===
+PASS: no subtask:true
+exit=0

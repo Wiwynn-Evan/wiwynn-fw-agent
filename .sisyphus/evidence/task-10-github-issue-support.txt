@@ -1,0 +1,22 @@
+Task 10: GitHub Issue Support Added to jira-deep-analysis SKILL.md
+Generated: 2026-03-07
+File: D:\Antigravity_project\wiwynn_fw_agent\wiwynn-fw-agent\.opencode\skills\jira-deep-analysis\SKILL.md
+
+=== grep -ic "github.com.*issues|github issue" SKILL.md ===
+8
+
+=== grep -ic "gh issue view|gh issue" SKILL.md ===
+3
+
+=== grep "2.3.0-wiwynn" SKILL.md ===
+version: 2.3.0-wiwynn
+- **v2.3.0-wiwynn** (2026-03-07): [Wiwynn fork] 新增 Route G GitHub Issue URL 支援（`gh issue view {URL} --json title,body,labels,assignees,comments`）；Phase 0 加入 GitHub Issue 偵測邏輯，以支援 `/fw-dev` slash command 接受 GitHub Issue URL 作為入口
+
+=== Changes Made ===
+1. Phase 0 新增 "Route G: GitHub Issue Mode" section
+   - Pattern detection: https://github.com/{owner}/{repo}/issues/{number}
+   - Fetch command: gh issue view {URL} --json title,body,labels,assignees,comments
+   - Routing logic: GitHub Issue → Route A flow (treating GitHub Issue data as equivalent to JIRA Issue)
+   - Context: supports /fw-dev slash command with GitHub Issue URL input
+2. Version updated from 2.2.0 → 2.3.0-wiwynn
+3. Version history entry added for v2.3.0-wiwynn

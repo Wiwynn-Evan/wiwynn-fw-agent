@@ -1,0 +1,12 @@
+=== FILE EXISTS CHECK ===
+EXISTS
+
+=== FRONTMATTER CHECK ===
+name: commit-message-reviewer
+Frontmatter found
+
+=== LINE COUNT ===
+432 /d/Antigravity_project/wiwynn_fw_agent/wiwynn-fw-agent/.opencode/skills/commit-message-reviewer/SKILL.md
+
+=== BYTE-FOR-BYTE COMPARISON ===
+FILES IDENTICAL

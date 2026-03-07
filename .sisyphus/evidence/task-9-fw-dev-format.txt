@@ -1,0 +1,9 @@
+=== task-9 format checks ===
+description: End-to-end firmware development orchestration from issue analysis to review loop with repo safety guardrails
+subtask: false
+OK no subtask:true
+OK no model frontmatter
+policy: forbid PR/issue on facebook/openbmc + facebook/OpenBIC
+policy: allow branch validation on facebookexternal/openbmc.wiwynn + Wiwynn/OpenBIC
+policy: allow issue/PR on Wiwynn/gc2-bmc-collection-script
+exit=0

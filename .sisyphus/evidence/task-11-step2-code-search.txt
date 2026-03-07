@@ -1,0 +1,21 @@
+=== Step2 code search output ===
+{
+  "total_count": 14,
+  "items": [
+    {
+      "repo": "Wiwynn/gc2-bmc-collection-script",
+      "path": "sch/AGENTS.md",
+      "name": "AGENTS.md",
+      "url": "https://github.com/Wiwynn/gc2-bmc-collection-script/blob/46ea749aeb905bc77cbbbb36996ca5c937e57972/sch/AGENTS.md"
+    },
+    {
+      "repo": "Wiwynn/gc2-bmc-collection-script",
+      "path": "README.md",
+      "name": "README.md",
+      "url": "https://github.com/Wiwynn/gc2-bmc-collection-script/blob/46ea749aeb905bc77cbbbb36996ca5c937e57972/README.md"
+    }
+  ],
+  "rate_limit_remaining": "9",
+  "errors": null
+}
+exit=0

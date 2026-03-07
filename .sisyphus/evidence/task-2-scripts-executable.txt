@@ -1,0 +1,21 @@
+=== fetch_jira.py test ===
+用法: python fetch_jira.py <ISSUE-KEY>
+範例: python fetch_jira.py GC20T5T7-121
+=== search_github.py --help ===
+usage: search_github.py [-h] [--repos OWNER/REPO [OWNER/REPO ...]] [--org ORG]
+                        [--ext EXT] [--per-page N] [--text-matches]
+                        query
+
+GitHub Code Search — 搜尋多個 repo 的程式碼，JSON 輸出
+=== grep_github_file.py --help ===
+usage: grep_github_file.py [-h] [--context N] [--max-matches N] [--ref REF]
+                           OWNER/REPO PATH PATTERN
+
+在 GitHub 檔案中搜尋 pattern，回傳匹配行號與上下文
+
+=== fetch_github_file.py --help ===
+usage: fetch_github_file.py [-h] [--context N] [--ref REF]
+                            OWNER/REPO PATH LINE
+
+取得 GitHub 檔案內容（指定行附近的程式碼片段），JSON 輸出
+

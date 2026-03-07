@@ -1,0 +1,57 @@
+=== QA Checks for fw-pr-reviewer SKILL.md ===
+
+--- Check 1: frontmatter name ---
+name: fw-pr-reviewer
+PASS: name: fw-pr-reviewer found
+
+--- Check 2: model: field MUST NOT exist ---
+PASS: no model: field
+
+--- Check 3: APPROVE count (>= 2) ---
+APPROVE count: 16
+PASS
+
+--- Check 4: REQUEST_CHANGES count (>= 2) ---
+REQUEST_CHANGES count: 13
+PASS
+
+--- Check 5: Error Handling (>= 1) ---
+Error Handling count: 10
+PASS
+
+--- Check 6: Memory Safety (>= 1) ---
+Memory Safety count: 6
+PASS
+
+--- Check 7: Platform Isolation or sublayer (>= 1) ---
+Platform Isolation/sublayer count: 10
+PASS
+
+--- Check 8: Required sections ---
+PASS: '## 概述' found
+PASS: '## 輸入' found
+PASS: '## 七大審查維度' found
+PASS: '## 審查流程' found
+PASS: '## 判定標準' found
+PASS: '## 輸出格式' found
+PASS: '### APPROVE 輸出模板' found
+PASS: '### REQUEST_CHANGES 輸出模板' found
+PASS: '## Review Loop 整合說明' found
+PASS: '## 版本歷史' found
+
+--- Check 9: description in frontmatter ---
+description: '審查韌體 PR 的程式碼品質，根據 7 個維度（Coding Style、Error Handling、Memory Safety、Commit Message、Platform Isolation、邏輯正確性、測試覆蓋）給出 APPROVE 或 REQUEST_CHANGES 判定，並產出結構化的 review 結果讓 fw-code-writer 可自動修正。適用於 Meta oBMC (OpenBMC) 與 OpenBIC (Zephyr) 韌體專案。'
+PASS
+
+--- Check 10: license: MIT ---
+license: MIT
+PASS
+
+--- Check 11: version: 1.0.0 ---
+version: 1.0.0
+PASS
+
+--- Check 12: Line count ---
+533 SKILL.md
+
+=== ALL QA CHECKS COMPLETE ===

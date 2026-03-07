@@ -1,0 +1,5 @@
+=== Step1 input JSON (for jira-deep-analysis GitHub Issue mode) ===
+{"assignees":[],"body":"## Description\nAdd a shell function to detect platform type from DMI/device-tree markers.\n\n## Expected Behavior\n- Return platform identifier consistently\n- Handle unknown platform gracefully\n\n## Why\nNeeded for automation flow validation in fw-agent E2E test.","labels":[],"title":"[Test] BMC script enhancement - add platform detection logic (2026-03-07)"}
+
+
+Expected parsing: title/body/labels/assignees fields present.

@@ -1,0 +1,49 @@
+=== fw-code-writer SKILL.md QA Validation ===
+Date: Sat, Mar  7, 2026 11:32:04 PM
+
+--- Check 1: frontmatter name (MUST: exit 0) ---
+name: fw-code-writer
+RESULT: PASS
+
+--- Check 2: no model: field (MUST: exit 1) ---
+RESULT: PASS (not found, as expected)
+
+--- Check 3: fetch_github_file.py count (>= 1) ---
+Count: 4
+RESULT: PASS
+
+--- Check 4: diff count (>= 2) ---
+Count: 22
+RESULT: PASS
+
+--- Check 5: PAL/pal_ count (>= 1) ---
+Count: 15
+RESULT: PASS
+
+--- Check 6: coding style/convention count (>= 1) ---
+Count: 7
+RESULT: PASS
+
+--- Check 7: search_github.py (should be 0 or minimal) ---
+Count: 0
+0
+RESULT: PASS (not fw-code-writer's responsibility)
+
+--- Check 8: required sections ---
+  ✓ ## 概述
+  ✓ ## 輸入
+  ✓ ## 程式碼撰寫規範
+  ✓ ### OpenBMC C Coding Style
+  ✓ ### OpenBIC / Zephyr Coding Style
+  ✓ ### 常見修改類型模板
+  ✓ ## 自動執行步驟
+  ✓ ## 輸出格式
+  ✓ ## 品質檢查
+  ✓ ## 版本歷史
+RESULT: PASS (all sections present)
+
+--- Check 9: file stats ---
+Lines: 405
+Size: 13729 bytes
+
+=== ALL CHECKS PASSED ===
