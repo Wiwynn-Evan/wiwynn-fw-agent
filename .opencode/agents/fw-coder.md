@@ -1,7 +1,7 @@
 ---
 name: fw-coder
 description: Firmware code writer for OpenBMC (C) and OpenBIC (Zephyr) projects. Generates unified diffs preserving existing style and patterns.
-model: github/gpt-5.3-codex
+model: github-copilot/gpt-5.3-codex
 ---
 
 # fw-coder Agent
