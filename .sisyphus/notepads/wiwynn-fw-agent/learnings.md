@@ -270,3 +270,41 @@ Added GitHub Issue URL support to the wiwynn copy of jira-deep-analysis (v2.3.0-
 - Version bumped from 2.2.0 → 2.3.0-wiwynn in frontmatter
 - Version history entry added
 - EF1900 original UNCHANGED (still 683 lines)
+### 2026-03-08 OpenCode MCP Integration Lessons
+- **Config Location**: OpenCode MCPs must be configured in `opencode.json` (project root) or `~/.config/opencode/opencode.json`. Avoid `.opencode/config.json`.
+- **Schema Strictness**: Use `command` as an array and `environment` (not `env`) for variables.
+- **Windows Pathing**: Use absolute paths with forward slashes `/` in JSON to avoid resolution and escape issues.
+- **Verification**: Use `opencode mcp list` and `opencode mcp debug <name>` for authoritative status and troubleshooting.
+
+## [2026-03-08] PR Quality Remediation Research
+
+### GitHub CLI Capabilities Confirmed
+
+#### PR Body Editing
+- `gh pr edit <number> --body "NEW BODY"` — edit PR title/body directly, no force push needed
+- `gh pr edit <number> --body-file file.md` — read body from file (safe for complex markdown)
+
+#### PR Comment Management
+- `gh pr comment --edit-last` — edit your last comment on current PR branch
+- `gh pr comment --delete-last --yes` — delete last comment without confirmation prompt
+- `gh api --method PATCH /repos/{owner}/{repo}/issues/comments/{id} -f body="TEXT"` — edit ANY comment by ID
+- `gh api --method DELETE /repos/{owner}/{repo}/issues/comments/{id}` — delete any comment by ID
+- List all comment IDs: `gh api repos/{owner}/{repo}/issues/{pr}/comments --jq '.[].id'`
+
+#### Commit Message Rewrite After Push
+- Requires interactive rebase: `git rebase -i <base-sha>` → change `pick` to `reword` for target commit
+- Then force push: `git push --force-with-lease origin <branch>` (safer than `--force`)
+- `--force-with-lease` fails safely if remote has changed since last fetch
+- NO branch protection on `main` in Wiwynn-Evan/wiwynn-fw-agent (confirmed 404 on protection endpoint)
+- Repo is PUBLIC (private: false) — important: force push rewrites public history
+
+### Squash Merge as Alternative
+- All three merge modes enabled: merge commit, squash merge, rebase merge
+- Squash merge: creates brand-new commit on base branch, ignores individual commit bodies
+- Squash commit message can be fully customized at merge time (via UI or gh CLI)
+- No rebase of PR branch needed; history rewrite problem disappears entirely
+
+### Key Constraint
+- Repo is PUBLIC — any force push rewrites publicly visible history
+- No reviewers = disruption risk is minimal
+- No branch protection = force push is technically allowed

@@ -195,6 +195,7 @@ fi
 | **Body 結構** | Feature 需包含 `[Task Description]`, `[Motivation]`, `[Design]`, `[Test Log]` | Major |
 | **JIRA 關聯** | `[Task Description]` 中應包含 JIRA number | Minor |
 | **Test Log** | 必須包含 `[Test Log]` 區段和實際測試結果 | Major |
+| **AI Agent 標記** | 若 PR 由 AI Agent 建立，commit body 必須包含 `[AI Agent]` 區段，且 PR title 必須以 `(Agent)` 結尾 | Major |
 
 #### LF oBMC (Gerrit) 規則摘要
 
