@@ -21,16 +21,31 @@ subtask: false
 **必須呼叫：**
 ```typescript
 task(
-  subagent_type: "fw-analyst-opus",   // model: github-copilot/claude-opus-4.6
+  subagent_type: "fw-analyst-codex",   // model: github-copilot/gpt-5.3-codex (high reasoning variant)
   load_skills: ["jira-deep-analysis"],
   run_in_background: false,
   prompt: `
-    你是 fw-analyst-opus，你的 model 是 claude-opus-4.6。
+    你是 fw-analyst-codex，你的 model 是 gpt-5.3-codex。
+    **重要：優先使用 high reasoning/variant 進行本次分析。**
+    若平台不支援 high variant，仍需執行完整深度分析流程（不可降級為快速草率分析）。
 
     ## TASK
     分析以下 Issue：$ARGUMENTS
 
+    ## IMAGE HANDLING — 必須優先執行
+    **若 Issue 包含任何圖片、截圖或附件，必須執行以下步驟：**
+    1. **直接讀取每個圖片**：使用 model 的圖片理解能力，直接解析視覺內容
+    2. **轉換為結構化文字**：將圖片內容轉換為易於搜尋和後續使用的結構化格式
+    3. **輸出必須包含以下欄位**（至少）：
+       - `source`: 圖片來源（URL 或 Issue description）
+       - `extracted_text`: 圖片中可見的所有文字內容
+       - `structured_events`: 時間戳 / 元件名 / 錯誤訊息，格式為列表 (timestamp | component | message)
+       - `confidence`: 置信度（High / Medium / Low）
+       - `unknowns`: 無法確定或模糊的部分
+    4. **完整性檢查**：若圖片存在但未產出完整的結構化提取，則 Step 1 **不完整**，停止進行後續步驟
+
     ## EXPECTED OUTCOME
+    - **若有圖片：** 先輸出圖片結構化提取結果，包含以上欄位
     - 平台識別（GC2 oBMC | YV4 oBMC | gc2-es OpenBIC）
     - Root cause hypothesis
     - 受影響檔案路徑清單
@@ -42,12 +57,16 @@ task(
     - skill: jira-deep-analysis（已載入）
 
     ## MUST DO
+    - **若 Issue 包含圖片，必須先提取結構化文字（source / extracted_text / structured_events / confidence / unknowns）**
     - 嚴格遵守 jira-deep-analysis skill 的分析流程
     - 輸出結構化 Markdown，包含所有以上欄位
+    - **優先使用 high reasoning/variant（若平台支援）以達成深度分析**
+    - 若不支援 variant，確保不降級分析品質
 
     ## MUST NOT DO
     - 不可修改任何程式碼
     - 不可對 facebook/openbmc 或 facebook/OpenBIC 發送任何寫入操作
+    - **不可跳過圖片提取步驟**（若圖片存在但未提取結構化文字，Step 1 不完整，停止整個 pipeline）
   `
 )
 ```
@@ -101,6 +120,9 @@ task(
   run_in_background: false,
   prompt: `
     你是 fw-coder，你的 model 是 gpt-5.3-codex。
+    **重要：優先使用 high reasoning/variant 進行本次程式碼撰寫。**
+    理由：OpenBMC 修改可能跨越多個 repo（meta-grandcanyon/meta-yosemite4/common）。
+    若平台不支援 high variant，仍需完整撰寫程式碼、保留全部邏輯深度分析（不可降級）。
 
     ## TASK
     根據 Step 2 的修改方案，撰寫程式碼並產出 unified diff。
@@ -136,6 +158,9 @@ task(
   run_in_background: false,
   prompt: `
     你是 fw-coder，你的 model 是 gpt-5.3-codex。
+    **重要：優先使用 medium reasoning/variant 進行本次 commit message 生成。**
+    理由：Commit message 撰寫不需要超深層推理，medium reasoning 足以達成簡潔清晰的訊息。
+    若平台不支援 medium variant，保持完整輸出品質（不可降級）。
 
     ## TASK
     根據 Step 3 的 unified diff，產出 EF1900 規範的 commit message。

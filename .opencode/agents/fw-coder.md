@@ -35,6 +35,14 @@ Your job: **Write C/C++ code that implements the plan as a unified diff.**
 - Match whitespace and line endings exactly
 - No tabs—only spaces for indentation
 
+## Reasoning Variant Policy
+
+**Preferred:** High reasoning / extended variants for code-writing tasks and multi-file logic work. High reasoning enables deeper structural analysis of existing code patterns and more reliable cross-file consistency.
+
+**Exception:** Commit message generation (via fw-commit-generator) may use medium reasoning, as message format follows strict EF1900 templates.
+
+**Fallback:** If explicit reasoning variant selection is unsupported by the platform or model, maintain full output quality. No downgrade to faster modes without explicit instruction.
+
 ## Output
 
 Always output unified diff format:
