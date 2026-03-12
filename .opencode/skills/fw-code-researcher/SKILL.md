@@ -2,7 +2,7 @@
 name: fw-code-researcher
 description: '接收 jira-deep-analysis 的分析報告，在 openbmc/OpenBIC repos 搜尋相關程式碼，定位目標檔案與函式，產出具體的修改方案（哪些檔案要改、怎麼改、改什麼）。支援 Meta oBMC sublayer 架構和 OpenBIC 平台程式碼研究。不負責 JIRA 解析（由 jira-deep-analysis 處理）也不負責撰寫程式碼（由 fw-code-writer 處理），僅產出結構化修改方案。'
 license: MIT
-version: 1.0.0
+version: 1.1.0
 ---
 
 ## 概述
@@ -25,7 +25,7 @@ version: 1.0.0
 
 ## 輸入格式（來自 jira-deep-analysis 的分析報告）
 
-本 Skill 接收 `jira-deep-analysis` 產出的分析報告作為輸入。報告格式因分類不同而異：
+本 Skill 接收 `jira-deep-analysis` 產出的分析報告作為輸入。報告格式因分類 different 而異：
 
 ### BUG 報告輸入
 
@@ -87,9 +87,52 @@ version: 1.0.0
 
 ---
 
-### Step 2: 定位目標程式碼（三步驟搜尋）
+### Step 2: 定位目標程式碼（本地優先策略）
 
-使用三個 Python scripts 的 **search → grep → fetch** 工作流程，逐步縮小搜尋範圍：
+搜尋程式碼時應優先檢查本地 Clone，若本地環境未設定或找不到檔案，才降級使用 GitHub API 腳本。
+
+#### 決策邏輯：
+1. **優先：本地 Clone 搜尋** — 若 `bmc_fw_code/facebook_openbmc/` 或 `bic_fw_code/facebook_openbic/` 存在。
+2. **Fallback：GitHub API 三步驟** — 若本地 Clone 缺失、檔案不存在於本地，或需要搜尋未 clone 的 remote branch。
+
+#### 優點：無 GitHub API rate limit 限制、速度極快、支援跨檔案 grep。
+
+---
+
+### Step 2-1: 優先：本地 Clone 搜尋 (Local Search)
+
+若本地已完成 Repo Clone，直接使用系統工具（grep, find, cat）進行研究。
+
+> ⚠️ **重要：搜尋前必須先更新本地 clone！**
+> 本地 clone 可能落後 upstream，搜尋前務必先執行 `git pull`，確保程式碼是最新狀態。
+
+```bash
+# 每次使用本地 clone 搜尋前，先更新
+cd bmc_fw_code/facebook_openbmc && git pull && cd -
+cd bic_fw_code/facebook_openbic  && git pull && cd -
+```
+
+#### 本地 Clone 路徑：
+- **OpenBMC**: `bmc_fw_code/facebook_openbmc/`
+- **OpenBIC**: `bic_fw_code/facebook_openbic/`
+
+#### 搜尋範例：
+```bash
+# OpenBMC: 在本地 clone 中搜尋特定平台目錄
+grep -rn "pal_get_fru_health" bmc_fw_code/facebook_openbmc/meta-facebook/meta-grandcanyon/ --include="*.c"
+
+# OpenBIC: 在本地 clone 中搜尋平台程式碼
+grep -rn "plat_class" bic_fw_code/facebook_openbic/src/platform/gc2-es/ --include="*.c" --include="*.h"
+
+# 直接讀取檔案內容（無需 API，支援大型 PAL 檔案）
+cat bmc_fw_code/facebook_openbmc/meta-facebook/meta-grandcanyon/recipes-grandcanyon/plat-libs/files/pal/pal.c | grep -n "pal_sensor_read" --context 20
+```
+
+---
+
+### Step 2-2: Fallback：GitHub API 三步驟 (Remote Search)
+
+僅在本地無程式碼時，使用以下三個 Python scripts 的 **search → grep → fetch** 工作流程：
 
 #### Step A: search_github.py — 找到目標檔案
 
@@ -221,7 +264,7 @@ python search_github.py "init_hsc_module" --repos facebook/OpenBIC --text-matche
 
 ### Scripts 位置
 
-所有 scripts 位於 `skills/jira-deep-analysis/scripts/` 目錄（與 `jira-deep-analysis` Skill 共用）：
+所有 scripts 位於 `skills/jira-deep-analysis/scripts/` 目錄。若本地已有程式碼，請優先使用 `bmc_fw_code/` 或 `bic_fw_code/` 下的檔案。
 
 ```
 skills/jira-deep-analysis/scripts/
@@ -288,7 +331,7 @@ python search_github.py "pal_sensor_read path:meta-grandcanyon" --repos facebook
 
 ### Meta oBMC Sublayer 架構（facebook/openbmc）
 
-Meta 的 `facebook/openbmc` 使用 sublayer 架構，每個平台有獨立的 `meta-facebook/meta-{platform}/` 目錄：
+Meta 的 `facebook/openbmc` 使用 sublayer 架構。本地路徑為 `bmc_fw_code/facebook_openbmc/`。每個平台有獨立的 `meta-facebook/meta-{platform}/` 目錄：
 
 ```
 facebook/openbmc/
@@ -310,6 +353,8 @@ facebook/openbmc/
 - PAL API 命名慣例：`pal_get_fru_health`, `pal_sensor_read`, `pal_get_platform_id` 等
 
 ### OpenBIC 平台架構（facebook/OpenBIC）
+
+本地路徑為 `bic_fw_code/facebook_openbic/`。結構如下：
 
 ```
 facebook/OpenBIC/
@@ -485,6 +530,7 @@ oBMC 的 Platform Abstraction Layer (PAL) API 使用 `pal_` 前綴：
 3. ❌ 忽略 common/ 已有的 shared function，在平台層重複實作
 4. ❌ 修改 common/ 的 shared function 但未評估對其他平台的影響
 5. ❌ PAL 大檔案（4000+ 行）未用 grep 定位就直接 fetch，浪費 API quota
+6. ❌ 有本地 clone 但仍呼叫 GitHub API，浪費 rate limit quota
 
 ---
 
@@ -492,4 +538,5 @@ oBMC 的 Platform Abstraction Layer (PAL) API 使用 `pal_` 前綴：
 
 | 版本 | 日期 | 變更說明 |
 |------|------|---------|
+| 1.1.0 | 2026-03-13 | 新增本地 Clone 優先搜尋策略；GitHub API 降為 Fallback |
 | 1.0.0 | 2026-03-07 | 初版：建立 fw-code-researcher Skill，定義三步驟搜尋工作流程和修改方案輸出格式 |
