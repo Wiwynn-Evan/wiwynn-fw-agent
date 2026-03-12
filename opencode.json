@@ -7,11 +7,6 @@
         "bun",
         "jira-mcp-server/dist/index.js"
       ],
-      "environment": {
-        "JIRA_URL": "{env:JIRA_URL}",
-        "JIRA_USERNAME": "{env:JIRA_USERNAME}",
-        "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}"
-      },
       "enabled": true
     }
   }
