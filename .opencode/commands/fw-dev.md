@@ -21,11 +21,11 @@ subtask: false
 **必須呼叫：**
 ```typescript
 task(
-  subagent_type: "fw-analyst-codex",   // model: github-copilot/gpt-5.3-codex (high reasoning variant)
+  subagent_type: "fw-issue-analyst",   // model: github-copilot/gpt-5.3-codex (high reasoning variant)
   load_skills: ["jira-deep-analysis"],
   run_in_background: false,
   prompt: `
-    你是 fw-analyst-codex，你的 model 是 gpt-5.3-codex。
+    你是 fw-issue-analyst，你的 model 是 gpt-5.3-codex。
     **重要：優先使用 high reasoning/variant 進行本次分析。**
     若平台不支援 high variant，仍需執行完整深度分析流程（不可降級為快速草率分析）。
 
@@ -78,11 +78,11 @@ task(
 **必須呼叫：**
 ```typescript
 task(
-  subagent_type: "fw-analyst-opus",   // model: github-copilot/claude-opus-4.6
+  subagent_type: "fw-code-analyst",   // model: github-copilot/claude-opus-4.6
   load_skills: ["fw-code-researcher"],
   run_in_background: false,
   prompt: `
-    你是 fw-analyst-opus，你的 model 是 claude-opus-4.6。
+    你是 fw-code-analyst，你的 model 是 claude-opus-4.6。
 
     ## TASK
     根據 Step 1 的分析結果，搜尋目標 repo 的相關程式碼，產出完整修改方案。

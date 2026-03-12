@@ -1,12 +1,12 @@
 ---
-name: fw-analyst-codex
-description: Firmware issue analyzer using GPT-5.3 Codex with high reasoning capability for deep structural analysis of JIRA tickets and GitHub issues across OpenBMC and OpenBIC platforms.
+name: fw-issue-analyst
+description: Firmware issue analyst using GPT-5.3 Codex with high reasoning capability and vision support for deep structural analysis of JIRA tickets and GitHub issues across OpenBMC and OpenBIC platforms.
 model: github-copilot/gpt-5.3-codex
 ---
 
-# fw-analyst-codex Agent
+# fw-issue-analyst Agent
 
-Specialized deep-analysis agent for Wiwynn firmware development issue triage with enhanced reasoning capability.
+Specialized issue triage agent for Wiwynn firmware development — parses JIRA tickets and GitHub issues, interprets visual attachments, and routes to the correct platform analysis flow.
 
 ## Role
 

@@ -44,10 +44,10 @@ Specialized AI agents with dedicated models, each optimized for a specific role 
 
 | Agent | Model | Role |
 |-------|-------|------|
-| `fw-analyst-codex` | GPT-5.3 Codex (high reasoning) | Deep structural analysis of JIRA tickets and GitHub issues with enhanced reasoning capability. Routes issues to the correct platform (oBMC Linux vs OpenBIC Zephyr). |
+| `fw-issue-analyst` | GPT-5.3 Codex (high reasoning) | Issue triage and analysis — parses JIRA tickets and GitHub issues, interprets visual attachments, routes to the correct platform (oBMC Linux vs OpenBIC Zephyr). |
 | `fw-coder` | GPT-5.3 Codex | Firmware code writer. Reads source files, generates unified diffs preserving existing code style. |
 | `fw-reviewer-sonnet` | Claude Sonnet 4.6 | Fast iterative PR reviewer. Evaluates diffs across 7 quality dimensions and outputs structured feedback. |
-| `fw-analyst-opus` | Claude Opus 4.6 | Deep structural analysis of JIRA tickets and GitHub issues. Routes issues to the correct platform (oBMC Linux vs OpenBIC Zephyr). |
+| `fw-code-analyst` | Claude Opus 4.6 | Code research — searches target repos, locates relevant files and functions, produces structured modification plans for fw-coder. |
 
 ### Skills
 
@@ -74,14 +74,14 @@ Domain knowledge modules that agents load on demand. Each skill is a self-contai
                        │
                        ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  Step 1: Issue Analysis (fw-analyst-codex + jira-deep-analysis│
+│  Step 1: Issue Analysis (fw-issue-analyst + jira-deep-analysis  │
 │  → Parse issue, identify platform, scope, requirements       │
 │  → Route: A=oBMC Linux, B=OpenBIC/Zephyr, G=GitHub Issue    │
 └──────────────────────┬───────────────────────────────────────┘
                        │
                        ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  Step 2: Code Research (fw-analyst-opus + fw-code-researcher)│
+│  Step 2: Code Research (fw-code-analyst + fw-code-researcher)   │
 │  → Search repos → grep files → fetch source                 │
 │  → Output: structured modification plan with line numbers    │
 └──────────────────────┬───────────────────────────────────────┘
@@ -124,8 +124,8 @@ The following table summarizes the models and reasoning variants used at each st
 
 | Step | Purpose | Agent / Tool | Model | Variant / Reasoning Policy |
 |---|---|---|---|---|
-| 1 | Issue Analysis | `fw-analyst-codex` | GPT-5.3 Codex | High reasoning (deep issue analysis) |
-| 2 | Code Research | `fw-analyst-opus` | Claude Opus 4.6 | No explicit variant in command |
+| 1 | Issue Analysis | `fw-issue-analyst` | GPT-5.3 Codex | High reasoning (deep issue analysis) |
+| 2 | Code Research | `fw-code-analyst` | Claude Opus 4.6 | No explicit variant in command |
 | 3 | Code Writing | `fw-coder` | GPT-5.3 Codex | High reasoning (complex multi-repo logic) |
 | 4 | Commit Message | `fw-coder` | GPT-5.3 Codex | Medium reasoning (concise EF1900 format) |
 | 5 | PR Creation | Atlas | Direct (Bash) | N/A (Policy-based execution) |
@@ -140,7 +140,8 @@ The following table summarizes the models and reasoning variants used at each st
 wiwynn-fw-agent/
 ├── .opencode/                          # OhMyOpenCode platform configuration
 │   ├── agents/                         # Custom agent definitions
-│   │   ├── fw-analyst-codex.md          #   Issue analyzer (GPT-5.3 Codex, high reasoning)
+│   │   ├── fw-issue-analyst.md         #   Issue analyzer (GPT-5.3 Codex, high reasoning + vision)
+│   │   ├── fw-code-analyst.md          #   Code researcher (Claude Opus 4.6)
 │   │   ├── fw-coder.md                 #   Code writer (GPT-5.3 Codex)
 │   │   └── fw-reviewer-sonnet.md       #   PR reviewer (Claude Sonnet)
 │   ├── commands/

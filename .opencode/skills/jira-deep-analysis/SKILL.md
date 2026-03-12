@@ -2,7 +2,7 @@
 name: jira-deep-analysis
 description: 'Deep-dive analysis for BMC/firmware issues using evidence-based investigation. Handles TWO platforms: (1) OpenBMC Linux ecosystem (phosphor-*, bmcweb, entity-manager, oBMC kernel) via JIRA-driven parallel agent search — produces full root cause analysis reports; (2) OpenBIC/Zephyr gc2-es Bridge IC firmware (AST1030/Arm Cortex-M) via GDB/west runtime debugging — handles sensor/VR/thermal/SMI/crash issues with common/ shared-code awareness. Auto-routes based on issue context. Use for: complex JIRA bugs, cross-repo investigation, gc2-es plat_class/plat_ipmi debugging, OpenBIC common/ dependency issues, firmware regression analysis, platform porting problems.'
 license: MIT
-version: 2.3.0-wiwynn
+version: 2.4.0-wiwynn
 ---
 
 # BMC/韌體深度分析 Skill (雙平台路由)
@@ -118,11 +118,45 @@ Phase A-0: 理解 JIRA Issue    → Phase A-1: 平行搜尋 (4-6 agents)
 
 ### Phase A-0: 理解 JIRA Issue
 
-```bash
-webfetch(url="https://{jira-domain}/browse/{ISSUE-KEY}")
-```
+**資料取得優先順序（依序嘗試，成功即停止）：**
 
-提取：Summary、Description、Affects Version、Components/Labels、Attachments、Comments
+**Step 1（優先）：JIRA MCP**
+```typescript
+jira_get_issue(issue_key="{ISSUE-KEY}")         // 取得主要欄位
+jira_get_issue_comments(issue_key="{ISSUE-KEY}") // 取得留言
+```
+優點：有認證、結構化 JSON、速度快。
+
+**Step 2（Fallback）：fetch_jira.py**
+```bash
+python fetch_jira.py {ISSUE-KEY}
+```
+適用時機：MCP 不可用或回傳異常時。
+
+> ⚠️ **已移除 webfetch**：JIRA Cloud 有 SSO 認證牆，webfetch 只會拿到空白頁面，不可使用。
+
+> 📎 **圖片/附件說明**：MCP 對內嵌附件只回傳佔位文字（如 `[附件圖片: filename.png]`），
+> 無法自動取得圖片 binary。若 ticket 有截圖需要分析，請用戶手動將圖片貼入對話，
+> Codex 的 vision 能力會自動處理。**不要嘗試自動下載 JIRA 附件。**
+
+> 🔗 **Attachments 清單（`jira_get_issue` 新欄位）**：MCP 現在回傳完整 attachments 清單
+> （含 `filename`、`mimeType`、`size`、`author`、`created`）。
+> 使用方式：
+> - 若 attachments 有圖片（`mimeType: image/*`）→ 明確告知用戶「此 ticket 含 N 張截圖，
+>   若需分析請手動貼入對話」
+> - 若 attachments 有 log/trace 檔（`.txt`、`.log`、`.tar`）→ 請用戶提供，或記錄於分析報告「待補充」
+> - 若無 attachments → 跳過此提示
+
+> 🔗 **Linked Issues（`jira_get_issue` 新欄位）**：MCP 現在回傳 `linked_issues` 清單
+> （含 `relationship`、`linked_issue_key`、`linked_issue_summary`、`linked_issue_status`）。
+> 使用方式：
+> - **causes / is caused by**（Problem/Incident）→ 追溯根因鏈，考慮呼叫 `jira_get_issue` 取得 linked ticket 詳細資訊
+> - **blocks / is blocked by**（Blocker）→ 標示依賴關係，說明何時可解鎖
+> - **relates to**（Relates）→ 記錄相關 context，通常不需深入展開
+> - linked_issue_status 為「已解決」→ 可直接引用其修復方案作為參考
+
+提取：Summary、Description、Components/Labels、Comments
+      Attachments（清單 + 圖片提示）、Linked Issues（根因鏈 / 依賴關係）
 
 初步分類：`BUG_FIX` | `INVESTIGATION` | `PLATFORM_PORTING` | `FEATURE_REQUEST`
 
@@ -702,6 +736,7 @@ task(subagent_type="artistry", prompt="Non-conventional approach needed: ...")
 
 ## 版本歷史
 
+- **v2.4.0-wiwynn** (2026-03-13): MCP `jira_get_issue` 新增 `attachments`（檔名 + MIME + size + author）和 `linked_issues`（relationship + key + summary + status）兩個欄位；Phase A-0 加入對應使用說明（圖片提示用戶手動貼圖、linked issue 根因追蹤策略）
 - **v2.3.0-wiwynn** (2026-03-07): [Wiwynn fork] 新增 Route G GitHub Issue URL 支援（`gh issue view {URL} --json title,body,labels,assignees,comments`）；Phase 0 加入 GitHub Issue 偵測邏輯，以支援 `/fw-dev` slash command 接受 GitHub Issue URL 作為入口
 - **v2.3.0** (2026-03-05): 新增 Phase A-FR (FEATURE_REQUEST 工作流程) 含同平台 Pattern 優先、檔案組織一致性、交叉驗證三條規則 + 專用報告範本；新增 `grep_github_file.py` regex 語法備註
 - **v2.2.0** (2026-03-05): 新增「同類 sensor 掃描」規則、「修復層級」方案標示、Route B 品質檢查清單；`fetch_github_file.py` 新增 `--ref` 支援；源自 GC20T5T7-134 delta 分析 (DISC-006)
