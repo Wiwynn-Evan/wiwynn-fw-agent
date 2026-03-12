@@ -308,3 +308,11 @@ Added GitHub Issue URL support to the wiwynn copy of jira-deep-analysis (v2.3.0-
 - Repo is PUBLIC — any force push rewrites publicly visible history
 - No reviewers = disruption risk is minimal
 - No branch protection = force push is technically allowed
+
+
+## [2026-03-09] GC20T5T7-138 分析報告修正
+### 報告修正心得
+- **避免過度解讀代碼**：先前假設 `sync_date.sh` 的 `Default (OpenBMC build time)` 分支會強制設定時間，但實際閱讀代碼後發現該分支僅有 `echo` 記錄 log，並無 `date -s` 指令。
+- **證據權重**：截圖證據顯示 2018 與 2026 紀錄交錯出現，這強烈支持了「Persistent SEL 紀錄殘留」與「開機同步前新紀錄」共存的推論，優於單純的代碼靜態分析。
+- **區分實作與需求**：在報告中明確區分「實作預期行為」（Expected）與「鑑識品質需求」（Desirable），有助於與開發團隊溝通長期改善方案。
+- **初始時鐘來源**：在缺乏電池備援的 BMC 系統中，2018 年通常是 Linux 核心或 bootloader 的初始 Unix timestamp 預設值，而非 firmware build date 的強制設定。
