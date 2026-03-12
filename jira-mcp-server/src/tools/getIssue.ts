@@ -53,6 +53,45 @@ function parseIssueData(data: unknown, issueKey: string): JiraIssue {
     created: (fields.created as string) ?? "",
     updated: (fields.updated as string) ?? "",
     url: `${getJiraBaseUrl()}/browse/${issueKey}`,
+    attachments: ((fields.attachment as Array<Record<string, unknown>> | undefined) ?? []).map((a) => {
+      const attAuthor = a.author as Record<string, unknown> | null;
+      return {
+        id: (a.id as string) ?? "",
+        filename: (a.filename as string) ?? "",
+        mimeType: (a.mimeType as string) ?? "",
+        size: (a.size as number) ?? 0,
+        created: (a.created as string) ?? "",
+        author: (attAuthor?.displayName as string) ?? "Unknown",
+        content: (a.content as string) ?? "",
+      };
+    }),
+    linked_issues: ((fields.issuelinks as Array<Record<string, unknown>> | undefined) ?? []).flatMap((link) => {
+      const linkType = link.type as Record<string, unknown> | null;
+      const inward = link.inwardIssue as Record<string, unknown> | null;
+      const outward = link.outwardIssue as Record<string, unknown> | null;
+      const results = [];
+      if (inward) {
+        const inwardStatus = inward.status as Record<string, unknown> | null;
+        results.push({
+          id: (link.id as string) ?? "",
+          relationship: (linkType?.inward as string) ?? (linkType?.name as string) ?? "related",
+          linked_issue_key: (inward.key as string) ?? "",
+          linked_issue_summary: (inward.summary as string) ?? "",
+          linked_issue_status: (inwardStatus?.name as string) ?? "",
+        });
+      }
+      if (outward) {
+        const outwardStatus = outward.status as Record<string, unknown> | null;
+        results.push({
+          id: (link.id as string) ?? "",
+          relationship: (linkType?.outward as string) ?? (linkType?.name as string) ?? "related",
+          linked_issue_key: (outward.key as string) ?? "",
+          linked_issue_summary: (outward.summary as string) ?? "",
+          linked_issue_status: (outwardStatus?.name as string) ?? "",
+        });
+      }
+      return results;
+    }),
   };
 }
 
@@ -90,6 +129,24 @@ function formatMarkdown(issue: JiraIssue): string {
     `**Components**: ${components}`,
     `**Labels**: ${labels}`,
     "",
+    // Attachments section
+    ...(issue.attachments.length > 0 ? [
+      "## Attachments",
+      ...issue.attachments.map((a) => {
+        const sizeKb = (a.size / 1024).toFixed(1);
+        const date = a.created.slice(0, 10);
+        return `- 📎 **${a.filename}** (${a.mimeType}, ${sizeKb} KB, uploaded by ${a.author} on ${date})`;
+      }),
+      "",
+    ] : []),
+    // Linked Issues section
+    ...(issue.linked_issues.length > 0 ? [
+      "## Linked Issues",
+      ...issue.linked_issues.map((l) =>
+        `- **${l.relationship}**: ${l.linked_issue_key} — ${l.linked_issue_summary} [${l.linked_issue_status}]`
+      ),
+      "",
+    ] : []),
     "## Description",
     issue.description || "_No description provided._",
     "",

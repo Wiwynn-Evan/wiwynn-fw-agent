@@ -64,7 +64,7 @@ function getClient(): AxiosInstance {
 
 export async function fetchIssue(issueKey: string): Promise<unknown> {
   try {
-    const response = await getClient().get(`/issue/${issueKey}`);
+    const response = await getClient().get(`/issue/${issueKey}?fields=summary,description,labels,components,issuetype,status,priority,assignee,reporter,created,updated,attachment,issuelinks`);
     return response.data;
   } catch (error: unknown) {
     handleApiError(error, `issue/${issueKey}`);

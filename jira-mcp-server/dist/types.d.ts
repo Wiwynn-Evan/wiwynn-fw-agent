@@ -1,3 +1,19 @@
+export interface JiraAttachment {
+    id: string;
+    filename: string;
+    mimeType: string;
+    size: number;
+    created: string;
+    author: string;
+    content: string;
+}
+export interface JiraIssueLink {
+    id: string;
+    relationship: string;
+    linked_issue_key: string;
+    linked_issue_summary: string;
+    linked_issue_status: string;
+}
 export interface JiraIssue {
     key: string;
     summary: string;
@@ -12,6 +28,8 @@ export interface JiraIssue {
     created: string;
     updated: string;
     url: string;
+    attachments: JiraAttachment[];
+    linked_issues: JiraIssueLink[];
 }
 export interface JiraComment {
     id: string;

@@ -44,6 +44,45 @@ function parseIssueData(data, issueKey) {
         created: fields.created ?? "",
         updated: fields.updated ?? "",
         url: `${getJiraBaseUrl()}/browse/${issueKey}`,
+        attachments: (fields.attachment ?? []).map((a) => {
+            const attAuthor = a.author;
+            return {
+                id: a.id ?? "",
+                filename: a.filename ?? "",
+                mimeType: a.mimeType ?? "",
+                size: a.size ?? 0,
+                created: a.created ?? "",
+                author: attAuthor?.displayName ?? "Unknown",
+                content: a.content ?? "",
+            };
+        }),
+        linked_issues: (fields.issuelinks ?? []).flatMap((link) => {
+            const linkType = link.type;
+            const inward = link.inwardIssue;
+            const outward = link.outwardIssue;
+            const results = [];
+            if (inward) {
+                const inwardStatus = inward.status;
+                results.push({
+                    id: link.id ?? "",
+                    relationship: linkType?.inward ?? linkType?.name ?? "related",
+                    linked_issue_key: inward.key ?? "",
+                    linked_issue_summary: inward.summary ?? "",
+                    linked_issue_status: inwardStatus?.name ?? "",
+                });
+            }
+            if (outward) {
+                const outwardStatus = outward.status;
+                results.push({
+                    id: link.id ?? "",
+                    relationship: linkType?.outward ?? linkType?.name ?? "related",
+                    linked_issue_key: outward.key ?? "",
+                    linked_issue_summary: outward.summary ?? "",
+                    linked_issue_status: outwardStatus?.name ?? "",
+                });
+            }
+            return results;
+        }),
     };
 }
 function filterFields(issue, includeFields) {
@@ -73,6 +112,22 @@ function formatMarkdown(issue) {
         `**Components**: ${components}`,
         `**Labels**: ${labels}`,
         "",
+        // Attachments section
+        ...(issue.attachments.length > 0 ? [
+            "## Attachments",
+            ...issue.attachments.map((a) => {
+                const sizeKb = (a.size / 1024).toFixed(1);
+                const date = a.created.slice(0, 10);
+                return `- 📎 **${a.filename}** (${a.mimeType}, ${sizeKb} KB, uploaded by ${a.author} on ${date})`;
+            }),
+            "",
+        ] : []),
+        // Linked Issues section
+        ...(issue.linked_issues.length > 0 ? [
+            "## Linked Issues",
+            ...issue.linked_issues.map((l) => `- **${l.relationship}**: ${l.linked_issue_key} — ${l.linked_issue_summary} [${l.linked_issue_status}]`),
+            "",
+        ] : []),
         "## Description",
         issue.description || "_No description provided._",
         "",

@@ -47,7 +47,7 @@ function getClient() {
 }
 export async function fetchIssue(issueKey) {
     try {
-        const response = await getClient().get(`/issue/${issueKey}`);
+        const response = await getClient().get(`/issue/${issueKey}?fields=summary,description,labels,components,issuetype,status,priority,assignee,reporter,created,updated,attachment,issuelinks`);
         return response.data;
     }
     catch (error) {

@@ -1,3 +1,21 @@
+export interface JiraAttachment {
+  id: string;
+  filename: string;
+  mimeType: string;
+  size: number;         // bytes
+  created: string;      // ISO date string
+  author: string;       // displayName
+  content: string;      // download URL (needs auth)
+}
+
+export interface JiraIssueLink {
+  id: string;
+  relationship: string; // e.g. "blocks", "is blocked by", "relates to"
+  linked_issue_key: string;
+  linked_issue_summary: string;
+  linked_issue_status: string;
+}
+
 export interface JiraIssue {
   key: string;
   summary: string;
@@ -12,6 +30,8 @@ export interface JiraIssue {
   created: string;
   updated: string;
   url: string;
+  attachments: JiraAttachment[];
+  linked_issues: JiraIssueLink[];
 }
 
 export interface JiraComment {
