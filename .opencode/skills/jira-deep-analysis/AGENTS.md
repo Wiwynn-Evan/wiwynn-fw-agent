@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-The most complex skill in this repo (710 lines, v2.3.0-wiwynn). Dual-platform router: auto-detects OpenBMC Linux (Route A) vs OpenBIC/Zephyr (Route B) vs GitHub Issues (Route G) and runs platform-specific analysis phases.
+The most complex skill in this repo (787 lines, v2.3.0-wiwynn). Dual-platform router: auto-detects OpenBMC Linux (Route A) vs OpenBIC/Zephyr (Route B) vs GitHub Issues (Route G) and runs platform-specific analysis phases.
 
 ## STRUCTURE
 

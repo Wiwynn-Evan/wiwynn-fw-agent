@@ -12,7 +12,7 @@ Six OMO skills forming a complete firmware dev pipeline. Each is a standalone Ma
 | `fw-code-researcher` | 1.0.0 | Step 2: Code location | Analysis report | Modification plan (file list + diff-like) |
 | `fw-code-writer` | 1.0.0 | Step 3: Code generation | Modification plan | Unified diff (git-apply ready) |
 | `fw-commit-generator` | — | Step 4: Commit msg | `git diff --cached` | EF1900-compliant commit message |
-| `fw-pr-reviewer` | 1.0.0 | Step 5: Review loop | PR diff + commit msg | APPROVE or REQUEST_CHANGES |
+| `fw-pr-reviewer` | 1.0.0 | Step 6: Review loop | PR diff + commit msg | APPROVE or REQUEST_CHANGES |
 | `commit-message-reviewer` | — | Standalone | Commit message | Compliance report |
 
 ## WHERE TO LOOK
