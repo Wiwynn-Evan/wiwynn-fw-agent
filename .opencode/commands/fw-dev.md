@@ -311,6 +311,22 @@ Atlas 根據 Step 6 的 verdict 決定後續：
 
 ---
 
+## Cross-Step Verification Gate（各步驟完成前驗證）
+
+Atlas 在每個 Step 的 subagent 回傳結果後，必須逐項確認以下驗證表：
+
+| Step 完成時 | 驗證項目 | 驗證方式 |
+|------------|---------|---------|
+| Step 1 | 平台識別正確 | 確認 JIRA Key 前綴對應正確的平台（GC20T5T7→GC2 oBMC, GC2-→OpenBIC 等） |
+| Step 2 | 目標檔案清單完整 | 確認每個檔案有完整 repo 內路徑且存在 |
+| Step 3 | diff 行號準確 | 確認 context 行與原始檔案一致 |
+| Step 4 | commit message 完整 | 確認 `[AI Agent]` 和 `[Test Log]` 區段存在且內容具體 |
+| Step 6 | 7 維度逐一有證據 | 確認每個 PASS/FAIL 引用具體 diff 行號 |
+
+> ⛔ **若任何 Step 的 subagent 回傳結果缺少上述證據，Atlas 應要求 subagent 補充，不可直接進入下一個 Step。**
+
+---
+
 ## Input 範例
 
 - `/fw-dev GC20T5T7-121`

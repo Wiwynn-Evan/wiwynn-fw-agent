@@ -371,6 +371,24 @@ git add {modified_files}
 
 產出 diff 前，逐項確認以下清單：
 
+### ⛔ Verification Iron Law（完成前驗證紀律）
+
+```
+NO COMPLETION CLAIMS WITHOUT EVIDENCE
+```
+
+> 產出 diff 後，不可使用「應該沒問題」、「看起來正確」、「Error handling 完整」等模糊語句。
+> 每個品質清單項目必須附上**具體證據**（引用 diff 行號、引用原始檔案內容）。
+
+| ❌ 禁止 | ✅ 應該 |
+|---------|----------|
+| 「Error handling 完整」 | 「Line 125-128, 135-138 各有 `if (ret < 0)` + syslog」 |
+| 「命名符合慣例」 | 「新增函式 `pal_get_fru_status()` 使用 `pal_` 前綴」 |
+| 「diff 格式正確」 | 「Context 行 L100-102 與 fetch_github_file 第 100-102 行完全一致」 |
+| 「應該沒問題」 | 「逐項確認：4-space indent ✓、snprintf ✓、無 magic number ✓」 |
+
+---
+
 ### 程式碼品質
 
 - [ ] PAL API 命名遵循平台慣例（oBMC: `pal_`、OpenBIC: `plat_`）
@@ -403,3 +421,4 @@ git add {modified_files}
 | 版本 | 日期 | 說明 |
 |------|------|------|
 | 1.0.0 | 2026-03-07 | 初版：建立 fw-code-writer Skill，支援 OpenBMC/OpenBIC coding style 與 unified diff 輸出 |
+| 1.1.0 | 2026-03-15 | 新增 Verification Iron Law（完成前驗證紀律），要求每個品質清單項目附上具體證據 |

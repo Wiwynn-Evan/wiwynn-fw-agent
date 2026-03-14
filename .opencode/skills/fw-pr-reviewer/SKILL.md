@@ -356,6 +356,24 @@ OpenBIC/
 
 ---
 
+### ⛔ Verification Iron Law（審查證據紀律）
+
+```
+NO PASS/FAIL VERDICTS WITHOUT EVIDENCE
+```
+
+> 每個維度的 PASS/FAIL 判定必須附上**具體 diff 行號證據**。
+> 不可僅寫「符合慣例」或「錯誤處理完整」。
+
+| ❌ 禁止 | ✅ 應該 |
+|---------|----------|
+| `Coding Style: PASS — 符合 oBMC 慣例` | `Coding Style: PASS — diff L5-L12 使用 pal_ 命名，4-space indent` |
+| `Error Handling: PASS — 有錨誤處理` | `Error Handling: PASS — diff L15, L23, L31 各有 if(ret<0)+syslog` |
+| `Memory Safety: PASS — 無問題` | `Memory Safety: PASS — diff L8 使用 snprintf(buf, sizeof(buf), ...)` |
+| `維度 X: PASS` | `維度 X: PASS — [具體證據說明]` |
+
+---
+
 ## 判定標準
 
 ### APPROVE 條件
@@ -532,3 +550,4 @@ OpenBIC/
 | 版本 | 日期 | 變更說明 |
 |------|------|---------|
 | 1.0.0 | 2026-03-07 | 初始版本：七大審查維度、APPROVE / REQUEST_CHANGES 判定、Review Loop 整合 |
+| 1.1.0 | 2026-03-15 | 新增 Verification Iron Law（審查證據紀律），要求每個 PASS/FAIL 判定附上具體 diff 行號證據 |

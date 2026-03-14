@@ -260,6 +260,44 @@ python search_github.py "init_hsc_module" --repos facebook/OpenBIC --text-matche
 
 ---
 
+### Step 5: 細粒度執行計畫（Fine-Grained Task Plan）
+
+將修改方案拆分為**逐檔可獨立執行的 task**，每個 task 包含完整的上下文資訊，使 `fw-coder` 可獨立完成而無需回頭查閱。
+
+#### Task 拆分原則
+
+1. **每個 task 對應一個檔案的修改**（除非兩個檔案有強耦合，如 `.h` 和 `.c` 配對）
+2. **按依賴順序排列**：header (.h) → implementation (.c) → caller
+3. **每個 task 自包含**：包含完整的修改說明、參考 pattern、預期結果
+
+#### Task Plan 輸出格式
+
+```markdown
+## 執行計畫
+
+| Task # | 檔案 | 修改摘要 | 依賴 | 預期結果 |
+|--------|------|---------|------|----------|
+| T1 | `plat_class.h` | 新增 enum 定義 | 無 | 新 enum 可被其他檔案 include |
+| T2 | `plat_class.c` | 新增 detection function | T1 | function 可編譯、邏輯正確 |
+| T3 | `plat_sensor_table.c` | 更新 sensor config | T1, T2 | sensor table 引用新 enum |
+
+### Task T1: `plat_class.h`
+- **檔案路徑**: `src/platform/{platform}/plat_class.h`
+- **修改類型**: 新增 / 修改 / 刪除
+- **依賴 Task**: 無
+- **修改目標**: {具體要新增/修改的函式或區塊}
+- **參考 Pattern**: {從哪個平台/檔案/函式參考，含路徑和行號}
+- **具體修改內容**: {diff-like 格式}
+- **驗證方式**: {如何確認此 task 完成且正確}
+
+### Task T2: `plat_class.c`
+...
+```
+
+> **單檔修改例外**：若修改方案僅涉及單一檔案，可省略 Step 5，直接使用 Step 4 的修改方案即可。
+
+---
+
 ## 工具使用指南（Python scripts）
 
 ### Scripts 位置
@@ -497,6 +535,8 @@ oBMC 的 Platform Abstraction Layer (PAL) API 使用 `pal_` 前綴：
 - [ ] 功能測試：[在實機或模擬環境驗證的步驟]
 ```
 
+> **多檔案修改時**，在上方修改方案後，加入 Step 5 細粒度執行計畫（Task Plan 表格 + 逐檔 Task 詳細內容）。
+
 ---
 
 ## 最佳實踐
@@ -538,5 +578,6 @@ oBMC 的 Platform Abstraction Layer (PAL) API 使用 `pal_` 前綴：
 
 | 版本 | 日期 | 變更說明 |
 |------|------|---------|
+| 1.2.0 | 2026-03-15 | 新增 Step 5 細粒度執行計畫（Fine-Grained Task Plan），將多檔案修改拆分為逐檔 task |
 | 1.1.0 | 2026-03-13 | 新增本地 Clone 優先搜尋策略；GitHub API 降為 Fallback |
 | 1.0.0 | 2026-03-07 | 初版：建立 fw-code-researcher Skill，定義三步驟搜尋工作流程和修改方案輸出格式 |

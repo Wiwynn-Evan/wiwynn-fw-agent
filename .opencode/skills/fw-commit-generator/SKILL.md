@@ -232,6 +232,10 @@ fixed the i2c timeout issue
 
 ## 自我驗證清單 (Self-Verification)
 
+> ⛔ **Verification Discipline**: 每個清單項目勾選前，必須引用 commit message 中的具體文字作為證據。
+> 例：「✅ Test Log 具體 — 包含指令 `sensor-util server --thr | grep MB_E1S_TEMP_C` 和預期輸出」
+> 不可僅寫「✅ 已確認」「✅ 正確」等模糊語句。
+
 輸出前逐一確認：
 
 1. [ ] 是否符合目標平台的 Subject 格式（單層或多層 prefix）？
@@ -255,6 +259,7 @@ fixed the i2c timeout issue
 
 ## 版本歷史 (Changelog)
 
+- **v1.1.0** (2026-03-15): 新增 Verification Discipline，要求自我驗證清單逐項附上具體證據
 - **v1.0.0** (2026-03-07): 初始版本，從 `ai-prompts/commit-message-generator.md` 轉換為 OpenCode Skill
   - 支援 Meta oBMC 與 LF oBMC 雙平台規範
   - 新增自動讀取 `git diff --cached` 功能
