@@ -1,0 +1,50 @@
+--- a/meta-facebook/meta-grandcanyon/recipes-grandcanyon/plat-libs/files/pal/pal.h
++++ b/meta-facebook/meta-grandcanyon/recipes-grandcanyon/plat-libs/files/pal/pal.h
+@@ -215,8 +215,11 @@
+ 
+ //Server board Discrete/SEL Sensors
+ enum {
+   BIC_SENSOR_VRHOT = 0xB4,
+   BIC_SENSOR_SYSTEM_STATUS = 0x46,
+   BIC_SENSOR_PROC_FAIL = 0x65,
++#ifdef CONFIG_GRANDCANYON2
++  BIC_SENSOR_SYSTEM_STATUS_GC2 = 0x10,
++#endif
+ };
+ 
+--- a/meta-facebook/meta-grandcanyon/recipes-grandcanyon/plat-libs/files/pal/pal.c
++++ b/meta-facebook/meta-grandcanyon/recipes-grandcanyon/plat-libs/files/pal/pal.c
+@@ -2476,7 +2476,10 @@ pal_bic_sel_handler(uint8_t snr_num, uint8_t *event_data) {
+     case PWR_ERR:
+       is_err_server_sel = true;
+       break;
+     case BIC_SENSOR_SYSTEM_STATUS:
++#ifdef CONFIG_GRANDCANYON2
++    case BIC_SENSOR_SYSTEM_STATUS_GC2:
++#endif
+       if (event_data1 == SYS_EVENT_HOST_STALL) {
+         pal_host_stall_handler(FRU_SERVER);
+       }
+@@ -3037,6 +3040,11 @@ pal_get_custom_event_sensor_name(uint8_t fru, uint8_t sensor_num, char *name) {
+         case BIC_SENSOR_PROC_FAIL:
+           snprintf(name, MAX_SNR_NAME, "PROC_FAIL");
+           break;
++#ifdef CONFIG_GRANDCANYON2
++        case BIC_SENSOR_SYSTEM_STATUS_GC2:
++          snprintf(name, MAX_SNR_NAME, "SYSTEM_STATUS");
++          break;
++#endif
+         default:
+           snprintf(name, MAX_SNR_NAME, "Unknown");
+           ret = PAL_ENOTSUP;
+@@ -3256,7 +3264,10 @@ pal_parse_sel(uint8_t fru, uint8_t *sel, char *error_log) {
+           pal_parse_vr_event(event_data, error_log);
+           is_parsed = true;
+           break;
+         case BIC_SENSOR_SYSTEM_STATUS:
++#ifdef CONFIG_GRANDCANYON2
++        case BIC_SENSOR_SYSTEM_STATUS_GC2:
++#endif
+           pal_parse_sys_sts_event(event_data, error_log);
+           is_parsed = true;
+           break;
